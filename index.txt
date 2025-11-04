@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Desarrollo Económico</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos personalizados para las respuestas */
+        .option-correct {
+            background-color: #dcfce7; /* green-100 */
+            border-color: #22c55e; /* green-500 */
+            color: #15803d; /* green-700 */
+            font-weight: 600;
+        }
+        .option-incorrect {
+            background-color: #fee2e2; /* red-100 */
+            border-color: #ef4444; /* red-500 */
+            color: #b91c1c; /* red-700 */
+            font-weight: 600;
+        }
+        .rationale {
+            background-color: #f3f4f6; /* gray-100 */
+            border-top: 2px solid #e5e7eb; /* gray-200 */
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+
+    <div class="max-w-3xl mx-auto">
+        <!-- Encabezado -->
+        <header class="bg-blue-700 text-white p-6 rounded-t-lg shadow-lg">
+            <h1 class="text-3xl font-bold text-center">Test: Desarrollo Económico</h1>
+            <p class="text-center text-blue-200 mt-1">Tema 6: Desigualdad, Desequilibrios y Cooperación</p>
+        </header>
+
+        <!-- Contenedor Principal del Test -->
+        <main class="bg-white p-6 md:p-8 rounded-b-lg shadow-lg">
+            
+            <!-- El Quiz se generará aquí -->
+            <div id="quiz-container" class="space-y-6">
+                <!-- Las preguntas se inyectarán con JavaScript -->
+            </div>
+            
+            <!-- Contenedor de Resultados (oculto) -->
+            <div id="results-container" class="hidden text-center p-6 border-t mt-6">
+                <h2 class="text-2xl font-bold" id="score-text">Tu puntuación: 0 / 10</h2>
+                <p id="score-message" class="mt-2 text-lg"></p>
+            </div>
+
+            <!-- Botón de Envío -->
+            <button id="submit-btn" class="mt-8 w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Corregir Test
+            </button>
+        </main>
+    </div>
+
+    <script>
+        // --- 1. DATOS DEL CUESTIONARIO ---
+        const quizData = [
+            {
+                "question": "¿Qué define la 'pobreza relativa'?",
+                "answerOptions": [
+                    { "text": "No tener ingresos suficientes para cubrir las necesidades básicas de supervivencia.", "rationale": "Esta definición corresponde a la pobreza absoluta, que se mide con un umbral fijo (línea de pobreza).", "isCorrect": false },
+                    { "text": "Tener un nivel de ingresos significativamente inferior al ingreso medio o mediano de la sociedad en la que se vive.", "rationale": "Correcto; la pobreza relativa depende de la distribución del ingreso en un país específico, no de un umbral de supervivencia universal.", "isCorrect": true },
+                    { "text": "La falta de acceso a instituciones políticas y sociales.", "rationale": "Esto es una dimensión de la pobreza (pobreza multidimensional), pero no la definición de pobreza relativa, que es puramente económica.", "isCorrect": false },
+                    { "text": "El porcentaje de la población que vive con menos de 2,15 dólares al día.", "rationale": "Este es el umbral internacionalmente aceptado para la pobreza extrema, que es una medida de pobreza absoluta.", "isCorrect": false }
+                ],
+                "hint": "Piensa en cómo se compara tu ingreso con el del resto de la población de tu propio país."
+            },
+            {
+                "question": "En la medición de la desigualdad, un Coeficiente de Gini con valor de 1 (o 100%) representa...",
+                "answerOptions": [
+                    { "text": "La igualdad perfecta (todos tienen los mismos ingresos).", "rationale": "Un valor de 0 en el Coeficiente de Gini es el que representa la igualdad perfecta.", "isCorrect": false },
+                    { "text": "Un nivel de pobreza moderada en el país.", "rationale": "El Coeficiente de Gini mide la desigualdad de la distribución, no el nivel de pobreza absoluta.", "isCorrect": false },
+                    { "text": "La desigualdad máxima (una persona concentra todos los ingresos).", "rationale": "Un valor de 1 (o 100%) indica que una sola entidad (persona u hogar) recibe toda la riqueza o ingreso, representando la máxima concentración.", "isCorrect": true },
+                    { "text": "Que el 50% más pobre de la población posee el 50% de la riqueza.", "rationale": "Esto describiría una situación de igualdad perfecta, que corresponde a un Gini de 0.", "isCorrect": false }
+                ],
+                "hint": "El Coeficiente de Gini es un índice que va de 0 a 1. ¿Qué representa el extremo más alto?"
+            },
+            {
+                "question": "¿Cuál de los siguientes se considera un 'factor interno' que explica los desequilibrios económicos?",
+                "answerOptions": [
+                    { "text": "La carga de la deuda externa.", "rationale": "La deuda se contrae con acreedores fuera del país, por lo que se considera un factor externo.", "isCorrect": false },
+                    { "text": "El legado histórico del colonialismo.", "rationale": "El colonialismo fue una relación impuesta desde el exterior, por lo que es un factor histórico externo.", "isCorrect": false },
+                    { "text": "El desequilibrio en los términos de intercambio comercial.", "rationale": "Los términos de intercambio se definen en el comercio con otros países, siendo un factor externo.", "isCorrect": false },
+                    { "text": "La debilidad institucional y la corrupción.", "rationale": "La calidad de las instituciones, la gobernanza y la corrupción son características propias de la estructura política y social del país.", "isCorrect": true }
+                ],
+                "hint": "Busca el factor que se origina y se gestiona principalmente dentro de las fronteras del propio país."
+            },
+            {
+                "question": "En el 'Círculo Vicioso de la Pobreza', los bajos ingresos conducen directamente a...",
+                "answerOptions": [
+                    { "text": "Un aumento de la productividad laboral.", "rationale": "Al contrario, los bajos ingresos impiden la inversión en salud y educación, lo que reduce la productividad.", "isCorrect": false },
+                    { "text": "Bajos niveles de ahorro y consumo.", "rationale": "Si los ingresos apenas cubren la subsistencia, no hay capacidad para ahorrar (invertir) ni para demandar más bienes y servicios.", "isCorrect": true },
+                    { "text": "Una mayor estabilidad política.", "rationale": "Los bajos ingresos y la pobreza suelen estar correlacionados con una mayor inestabilidad política, no menor.", "isCorrect": false },
+                    { "text": "Una rápida acumulación de capital humano.", "rationale": "Acumular capital humano (educación, salud) requiere inversión, algo que los bajos ingresos impiden.", "isCorrect": false }
+                ],
+                "hint": "Si una familia gana muy poco, ¿cuál es la primera consecuencia económica en su presupuesto?"
+            },
+            {
+                "question": "¿Cuál de las siguientes es una institución de ayuda 'multilateral'?",
+                "answerOptions": [
+                    { "text": "La Ayuda Oficial al Desarrollo (AOD) de España a Perú.", "rationale": "Esto es un ejemplo de ayuda bilateral, ya que ocurre entre dos países (de gobierno a gobierno).", "isCorrect": false },
+                    { "text": "El Grupo Banco Mundial.", "rationale": "El Banco Mundial recibe fondos de muchos países miembros y los canaliza hacia proyectos en múltiples naciones, por eso es multilateral.", "isCorrect": true },
+                    { "text": "Una ONG como 'Médicos Sin Fronteras'.", "rationale": "Las ONGs son actores no gubernamentales; no encajan en la categoría de ayuda multilateral (que es entre gobiernos).", "isCorrect": false },
+                    { "text": "Una donación de una empresa multinacional a un país.", "rationale": "Esto sería filantropía corporativa o inversión privada, no ayuda multilateral.", "isCorrect": false }
+                ],
+                "hint": "El prefijo 'multi-' significa 'muchos'. ¿Qué institución involucra a muchos países donantes y receptores?"
+            },
+            {
+                "question": "¿Cuál es el principal enfoque del Fondo Monetario Internacional (FMI) en la cooperación al desarrollo?",
+                "answerOptions": [
+                    { "text": "Financiar proyectos de infraestructura a largo plazo (carreteras, escuelas).", "rationale": "Esta es la función principal del Banco Mundial (especialmente el BIRF y la AIF).", "isCorrect": false },
+                    { "text": "Proveer ayuda humanitaria de emergencia tras un desastre natural.", "rationale": "Esto suele ser gestionado por agencias de la ONU (como OCHA) y ONGs.", "isCorrect": false },
+                    { "text": "Asegurar la estabilidad macroeconómica y financiera global, a menudo mediante préstamos a corto plazo.", "rationale": "El FMI actúa como prestamista de última instancia para países con crisis de balanza de pagos, enfocándose en la estabilidad.", "isCorrect": true },
+                    { "text": "Implementar proyectos de desarrollo comunitario a nivel local.", "rationale": "Este es el campo de acción principal de las ONGs y, en ocasiones, de agencias bilaterales.", "isCorrect": false }
+                ],
+                "hint": "Piensa en esta institución como el 'bombero' del sistema financiero global."
+            },
+            {
+                "question": "Los flujos de ayuda que los gobiernos conceden a países en desarrollo se conocen como...",
+                "answerOptions": [
+                    { "text": "Inversión Extranjera Directa (IED).", "rationale": "La IED es inversión privada de empresas que buscan un rendimiento económico, no es ayuda gubernamental.", "isCorrect": false },
+                    { "text": "Ayuda Oficial al Desarrollo (AOD).", "rationale": "La AOD (u ODA en inglés) es la definición estándar para los flujos de ayuda pública (gubernamental) con fines de desarrollo.", "isCorrect": true },
+                    { "text": "Remesas de emigrantes.", "rationale": "Las remesas son fondos privados que los individuos envían a sus familias; no son ayuda gubernamental.", "isCorrect": false },
+                    { "text": "Financiación multilateral.", "rationale": "La AOD puede ser bilateral o multilateral, pero 'AOD' es el término general para la ayuda gubernamental.", "isCorrect": false }
+                ],
+                "hint": "Busca el término 'Oficial' que se refiere a los gobiernos."
+            },
+            {
+                "question": "¿Cómo se denomina el marco global actual que establece 17 objetivos para el año 2030?",
+                "answerOptions": [
+                    { "text": "Los Objetivos de Desarrollo del Milenio (ODM).", "rationale": "Los ODM fueron el marco anterior, que estuvo vigente desde el año 2000 hasta el 2015.", "isCorrect": false },
+                    { "text": "El Consenso de Washington.", "rationale": "Este fue un conjunto de recomendaciones de política económica de los años 90, no un marco de objetivos sociales y ambientales.", "isCorrect": false },
+                    { "text": "Los Objetivos de Desarrollo Sostenible (ODS).", "rationale": "Los ODS (o SDGs en inglés) son la agenda actual 2015-2030, que equilibra lo económico, social y ambiental.", "isCorrect": true },
+                    { "text": "Los Acuerdos de Bretton Woods.", "rationale": "Estos acuerdos de 1944 crearon el FMI y el Banco Mundial, pero no son el marco de objetivos actual.", "isCorrect": false }
+                ],
+                "hint": "El marco actual pone un fuerte énfasis en la 'Sostenibilidad'."
+            },
+            {
+                "question": "¿Cuál de las siguientes agencias del Grupo Banco Mundial se especializa en ofrecer préstamos a los países más pobres en condiciones muy favorables (bajos o nulos intereses)?",
+                "answerOptions": [
+                    { "text": "BIRF (Banco Internacional de Reconstrucción y Fomento).", "rationale": "El BIRF presta a países de ingreso medio en condiciones de mercado, no a los más pobres en condiciones concesionales.", "isCorrect": false },
+                    { "text": "AIF (Asociación Internacional de Fomento).", "rationale": "La AIF (o IDA en inglés) es la 'ventanilla blanda' del Banco Mundial, dedicada a dar créditos y donaciones a los países más pobres.", "isCorrect": true },
+                    { "text": "OMC (Organización Mundial del Comercio).", "rationale": "La OMC no forma parte del Grupo Banco Mundial y se ocupa de las normas del comercio internacional.", "isCorrect": false },
+                    { "text": "FMI (Fondo Monetario Internacional).", "rationale": "El FMI no es parte del Grupo Banco Mundial y se enfoca en la estabilidad financiera, no en el financiamiento de proyectos a largo plazo.", "isCorrect": false }
+                ],
+                "hint": "El Banco Mundial tiene una división para países de renta media (BIRF) y otra para países de renta baja (esta)."
+            },
+            {
+                "question": "Desde la perspectiva de un estudiante de ADE, ¿por qué es relevante el concepto de 'Base de la Pirámide' (Bottom of the Pyramid - BoP)?",
+                "answerOptions": [
+                    { "text": "Porque se refiere a las estrategias de evasión fiscal de las multinacionales.", "rationale": "El concepto BoP no tiene que ver con la fiscalidad, sino con los mercados de bajos ingresos.", "isCorrect": false },
+                    { "text": "Porque describe a los países con mayores recursos naturales para explotar.", "rationale": "La 'pirámide' es social y económica (basada en ingresos), no geológica o de recursos.", "isCorrect": false },
+                    { "text": "Porque plantea un modelo de negocio que ve a las poblaciones más pobres como un mercado potencial (consumidores) y socios (productores).", "rationale": "Este enfoque, popularizado por C.K. Prahalad, sugiere que las empresas pueden ser rentables y a la vez aliviar la pobreza.", "isCorrect": true },
+                    { "text": "Porque es el nombre de la sede principal del Banco Mundial.", "rationale": "La sede del Banco Mundial está en Washington D.C., y el concepto BoP es una teoría de gestión empresarial.", "isCorrect": false }
+                ],
+                "hint": "Piensa en cómo las empresas pueden interactuar con los miles de millones de personas con ingresos muy bajos."
+            }
+        ];
+
+        // --- 2. LÓGICA DEL CUESTIONARIO ---
+
+        /**
+         * Construye el HTML del cuestionario a partir de los datos
+         */
+        function buildQuiz() {
+            const quizContainer = document.getElementById('quiz-container');
+            
+            quizData.forEach((question, index) => {
+                // Contenedor de la pregunta
+                const questionElement = document.createElement('div');
+                questionElement.className = 'p-4 border border-gray-200 rounded-lg shadow-sm';
+                
+                // Texto de la pregunta
+                let questionHTML = `
+                    <div class="flex justify-between items-start">
+                        <h2 class="text-lg font-semibold mb-3">${index + 1}. ${question.question}</h2>
+                        <button class="hint-btn text-sm text-blue-500 hover:text-blue-700" data-hint="${question.hint}">Pista</button>
+                    </div>`;
+                
+                // Opciones de respuesta
+                const optionsHTML = question.answerOptions.map((option, optionIndex) => `
+                    <label for="q${index}o${optionIndex}" class="block p-3 my-2 rounded-lg border border-gray-300 hover:bg-gray-50 cursor-pointer option-label transition-colors duration-200">
+                        <input type="radio" name="question${index}" id="q${index}o${optionIndex}" value="${optionIndex}" class="mr-3 text-blue-600 focus:ring-blue-500">
+                        ${option.text}
+                    </label>
+                `).join('');
+
+                // Contenedor para la explicación (inicialmente oculto)
+                const rationaleHTML = `<div id="rationale${index}" class="rationale p-3 -mx-4 -mb-4 hidden text-sm"></div>`;
+
+                questionElement.innerHTML = questionHTML + optionsHTML + rationaleHTML;
+                quizContainer.appendChild(questionElement);
+            });
+
+            // Añadir eventos a los botones de pista
+            document.querySelectorAll('.hint-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    alert(btn.dataset.hint);
+                });
+            });
+        }
+
+        /**
+         * Muestra los resultados al hacer clic en el botón
+         */
+        function showResults() {
+            let score = 0;
+            const labels = document.querySelectorAll('.option-label');
+            
+            // Deshabilitar todos los inputs
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.disabled = true;
+            });
+
+            // Iterar sobre cada pregunta para corregir
+            quizData.forEach((question, index) => {
+                const selectedRadio = document.querySelector(`input[name="question${index}"]:checked`);
+                const rationaleElement = document.getElementById(`rationale${index}`);
+                
+                const correctOptionIndex = question.answerOptions.findIndex(opt => opt.isCorrect);
+                const correctLabel = document.querySelector(`label[for="q${index}o${correctOptionIndex}"]`);
+
+                let rationaleText = "";
+
+                if (selectedRadio) {
+                    const selectedOptionIndex = parseInt(selectedRadio.value);
+                    const selectedLabel = selectedRadio.parentElement;
+
+                    if (question.answerOptions[selectedOptionIndex].isCorrect) {
+                        score++;
+                        selectedLabel.classList.add('option-correct');
+                        rationaleText = `<strong>¡Correcto!</strong> ${question.answerOptions[selectedOptionIndex].rationale}`;
+                    } else {
+                        selectedLabel.classList.add('option-incorrect');
+                        correctLabel.classList.add('option-correct');
+                        rationaleText = `<strong>Incorrecto.</strong> ${question.answerOptions[selectedOptionIndex].rationale} <hr class="my-2 border-gray-300"> <strong>Respuesta correcta:</strong> ${question.answerOptions[correctOptionIndex].rationale}`;
+                    }
+                } else {
+                    // Si no se seleccionó ninguna respuesta
+                    correctLabel.classList.add('option-correct');
+                    rationaleText = `<strong>Respuesta correcta:</strong> ${question.answerOptions[correctOptionIndex].rationale}`;
+                }
+                
+                rationaleElement.innerHTML = rationaleText;
+                rationaleElement.classList.remove('hidden');
+            });
+
+            // Mostrar puntuación final
+            const resultsContainer = document.getElementById('results-container');
+            const scoreText = document.getElementById('score-text');
+            const scoreMessage = document.getElementById('score-message');
+            scoreText.textContent = `Tu puntuación: ${score} de ${quizData.length}`;
+
+            if (score === quizData.length) {
+                scoreMessage.textContent = "¡Excelente! Has dominado todos los conceptos.";
+                scoreMessage.className = "mt-2 text-lg text-green-600";
+            } else if (score >= quizData.length * 0.7) {
+                scoreMessage.textContent = "¡Muy bien! Tienes una base sólida de los conceptos.";
+                scoreMessage.className = "mt-2 text-lg text-blue-600";
+            } else {
+                scoreMessage.textContent = "Buen intento. Revisa las explicaciones para reforzar los conceptos.";
+                scoreMessage.className = "mt-2 text-lg text-amber-600";
+            }
+            
+            resultsContainer.classList.remove('hidden');
+
+            // Deshabilitar y cambiar el botón de envío
+            const submitButton = document.getElementById('submit-btn');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Test Corregido';
+            submitButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+            
+            // Scroll al inicio del test para ver la puntuación
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- 3. INICIALIZACIÓN ---
+        
+        // Construir el quiz cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', buildQuiz);
+        
+        // Añadir el evento al botón de envío
+        document.getElementById('submit-btn').addEventListener('click', showResults);
+
+    </script>
+</body>
+</html>
